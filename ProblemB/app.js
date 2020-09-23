@@ -1,3 +1,27 @@
+//  graph problem
+// Lowest Common Ancestor (LCA) Problem
+// Eulerian path method
+/**
+ * TODO:
+ *
+ * representing the names as vertex
+ * respresent the connection as edgs
+ * king is searchKey
+ * vertex = {names}
+ * edgs: {connections}
+ *
+ * represent the neighbors concept :
+ * vertics u and v are neighbors if an edge(u,v) connect them
+ *degree of vertix = is equal to thenumber of edges connected to this V
+ * connectivity tow vertex are connected if a pathexists between them
+ *
+ * it's topological sort applied to a acyclic graphs(dags) only no  cicle connections a to b and b to a
+ *  the kid is the vertex and the parents are the neibors
+ * on every level away from the king we will devide 100 on the level away from the king
+ *
+ *
+ */
+
 const readline = require("readline");
 const rl = readline.createInterface({
   input: process.stdin,
