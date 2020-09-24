@@ -5,21 +5,18 @@
  * TODO:
  *
  * representing the names as vertex
- * respresent the connection as edgs
+ * represent the connection as edges
  * king is searchKey
  * vertex = {names}
  * edgs: {connections}
  *
  * represent the neighbors concept :
- * vertics u and v are neighbors if an edge(u,v) connect them
- *degree of vertix = is equal to thenumber of edges connected to this V
- * connectivity tow vertex are connected if a pathexists between them
+ * vertices u and v are neighbors if an edge(u,v) connect them
+ *degree of vertex = is equal to the number of edges connected to this V
+ * connectivity tow vertex are connected if a path exists between them
  *
- * it's topological sort applied to a acyclic graphs(dags) only no  cicle connections a to b and b to a
- *  the kid is the vertex and the parents are the neibors
- * on every level away from the king we will devide 100 on the level away from the king
- *
- *
+ * it's topological sort applied to a acyclic graphs(dags) only no  circle connections a to b and b to a
+ *  the kid is the vertex and the parents are the neighbors
  */
 
 const readline = require("readline");
@@ -71,6 +68,7 @@ rl.on("close", () => {
   participents = nodes.slice(nodes[1] * -1);
   king = nodes[2];
   families = data.slice(2, parseInt(data[0][0]) + 2);
+
   findEdges(families);
   vertices.forEach((n) => addVertex(n));
   edges.forEach((edge) => addEdge(...edge));
@@ -78,7 +76,13 @@ rl.on("close", () => {
   const checkList = (list) => {
     participents.forEach((p) => {
       if (list.get(p)) {
-        console.log(list.get(p));
+        // console.log(list.get(p));
+        for ([key, value] of vertexlist) {
+          // console.log(`${key} ==> ${value}`);
+          if (key === p && value.length === 0) {
+            console.log(`${p} ${value}`);
+          }
+        }
       }
     });
   };
