@@ -1,3 +1,4 @@
+const { strict } = require("assert");
 const readline = require("readline");
 const rl = readline.createInterface({
   input: process.stdin,
@@ -6,24 +7,48 @@ const rl = readline.createInterface({
 });
 const store = {
   data: [],
+  nodes: [],
 };
-// const data = [];
+
 rl.on("line", (line) => {
   store.data.push(line.split(" "));
 });
 
 const king = (d) => d[1].toString();
-const participantNumber = (d) => parseInt(d[0][1]);
 const familiesNumber = (d) => parseInt(d[0][0]);
+const participantNumber = (d) => parseInt(d[0][1]);
 const families = (d) => d.slice(2, parseInt(d[0][0]) + 2);
 const participants = (d) => d.slice(-participantNumber(d)).flat();
-const familiesEdges = (d) => {
-  for (let i = 0; i < d.length; i++) {
-    return d.reduce(function (p, c) {
+const setEdges = (d) => {
+  let edges = families(d);
+  for (let i = 0; i < edges.length; i++) {
+    return edges.reduce((p, c) => {
       p[c[0]] = [c[1], c[2]];
       return p;
     }, {});
   }
+};
+const names = (d) => {
+  let set = new Set([...participants(d).flat(), ...families(d).flat()]);
+  return Array.from(set);
+};
+
+const getEdges = (e) => {
+  setEdges(e);
+};
+
+const setNodes = (d) => {
+  d.forEach((element) => {
+    // console.log(element);
+    let obj = {
+      value: element,
+      edges: [],
+      weight: 0,
+      searched: false,
+      parent: null,
+    };
+    store.nodes.push(obj);
+  });
 };
 
 rl.on("close", () => {
@@ -34,8 +59,11 @@ rl.on("close", () => {
   // console.log("familiesNumber", familiesNumber(data));
   // console.log("families", families(data));
   // console.log("participants", participants(data));
-  // const nodes = families(data);
-  console.log(familiesEdges(families(data)));
+  const nodes = families(data);
+  setNodes(names(data));
+
+  console.log(store.nodes);
+  // console.log(setEdges(data));
 
   // orginizing tha data
   // console.log(data);
