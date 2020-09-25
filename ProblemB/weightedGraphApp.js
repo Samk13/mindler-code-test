@@ -33,12 +33,6 @@ function Node(name) {
   return nNodes.set(name, obj);
 }
 
-function addWeight(n, w) {
-  for ([key, value] of nNodes) {
-    console.log(key, value);
-  }
-}
-
 Node.prototype.addEdge = function (neighbor) {
   this.edges.push(neighbor);
   //   neighbor.edges.push(this);
@@ -108,9 +102,7 @@ rl.on("close", () => {
   const getNodeParent = (n) => peopleNodes[n].parent;
   const setNodeParent = (n, p) => (peopleNodes[n].parent = p);
   const setNodeWeight = (n, v) => (peopleNodes[n].weight = v);
-
   function checkKing(k) {
-    console.log();
     let queue = [];
     let start = setStartNode(getNodeName(k));
     let end = getEndNode();
@@ -135,8 +127,8 @@ rl.on("close", () => {
     }
   }
 
-  setEndNode(king);
-  checkKing(king);
+  setEndNode("test");
+  checkKing(king), 1000;
 
   // console.log(getNode(king));
 
