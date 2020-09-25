@@ -16,7 +16,7 @@ rl.on("line", (line) => {
 });
 
 const king = (d) => d[1].toString();
-// const familiesNumber = (d) => parseInt(d[0][0]);
+
 const participantNumber = (d) => parseInt(d[0][1]);
 
 const families = (d) => d.slice(2, parseInt(d[0][0]) + 2);
@@ -41,11 +41,7 @@ const names = (d) => {
 const setNodes = (da) => {
   const d = names(da);
   d.forEach((element) => {
-    // console.log(element);
-
     let edges = setEdges(da);
-    // console.log(edges[element]);
-    // if(element === )
     const checkEdges = edges[element] !== undefined ? edges[element] : [];
     let obj = {
       value: element,
@@ -61,7 +57,7 @@ const setNodes = (da) => {
     end: null,
   });
 };
-
+// BFS
 const setStartNode = (k) => (nodes[0].start = k);
 const getStartNode = () => nodes[0].start;
 const setEndNode = (k) => (nodes[0].end = k);
@@ -70,11 +66,43 @@ const getNode = (n) => nodes.find((node) => node.value === n);
 const setNodeSearched = (n) => (getNode(n).searched = true);
 const setNodeParent = (n, p) => (getNode(n).parent = p);
 const setNodeWeight = (n, w) => (getNode(n).weight = w);
-
+const BreadthFirstSearch = () => {
+  let queue = [];
+  const start = getStartNode();
+  const end = getEndNode();
+  // set start as searched
+  setNodeSearched(start);
+  //push it to the queue
+  queue.push(start);
+  while (queue.length > 0) {
+    let current = queue.shift();
+    console.log("current => ", current);
+    console.log("queue => ", queue);
+    if (current === end) {
+      console.log("FOUND || ========== >", current);
+      break;
+    }
+    let edges = getNode(current).edges;
+    for (var i = 0; i < edges.length; i++) {
+      let neighbor = edges[i];
+      // console.log("neighbors => ", neighbor);
+      if (!getNode(neighbor).searched) {
+        setNodeSearched(neighbor);
+        setNodeParent(neighbor, current);
+        queue.push(neighbor);
+      }
+    }
+  }
+};
 rl.on("close", () => {
   setNodes(data);
-  setStartNode(king(data));
 
-  console.log(setNodeWeight("henrii", 10));
-  console.log(getNode("henrii"));
+  setStartNode("helen");
+  setEndNode(king(data));
+
+  BreadthFirstSearch();
+
+  // console.log(nodes);
+  // console.log(setNodeWeight("henrii", 10));
+  // console.log(getNode("henrii"));
 });
