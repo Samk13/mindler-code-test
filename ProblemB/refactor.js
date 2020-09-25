@@ -25,7 +25,7 @@ const setEdges = (d) => {
     return edges.reduce((p, c) => {
       p[c[0]] = [c[1], c[2]];
       return p;
-    }, {});
+    }, []);
   }
 };
 const names = (d) => {
@@ -34,15 +34,23 @@ const names = (d) => {
 };
 
 const getEdges = (e) => {
-  setEdges(e);
+  let edges = setEdges(e);
+  // console.log(edges);
+  console.log(typeof edges);
 };
 
-const setNodes = (d) => {
+const setNodes = (da) => {
+  const d = names(da);
   d.forEach((element) => {
     // console.log(element);
+
+    let edges = setEdges(da);
+    // console.log(edges[element]);
+    // if(element === )
+    const checkEdges = edges[element] !== undefined ? edges[element] : [];
     let obj = {
       value: element,
-      edges: [],
+      edges: checkEdges,
       weight: 0,
       searched: false,
       parent: null,
@@ -59,28 +67,14 @@ rl.on("close", () => {
   // console.log("familiesNumber", familiesNumber(data));
   // console.log("families", families(data));
   // console.log("participants", participants(data));
-  const nodes = families(data);
-  setNodes(names(data));
+  // console.log(families(data));
+  setNodes(data);
 
   console.log(store.nodes);
-  // console.log(setEdges(data));
+  // console.log(getEdges(data));
 
+  // console.log(setEdges(data));
   // orginizing tha data
   // console.log(data);
   // preProcessData(store.data);
 });
-
-// const preProcessData = (d) => {
-//   for (let i = 2; i < d.length; i++) {
-//     console.log(d[i]);
-//     for (let j = 0; j < d[i].length; j++) {
-//       let result = new Set();
-//       result.value = d[i][j];
-//       result.edges = [];
-//       result.weight = 0;
-//       result.searched = false;
-//       result.parent = null;
-//       console.log(result);
-//     }
-//   }
-// };
