@@ -57,10 +57,14 @@ const setNodes = (da) => {
     };
     store.nodes.push(obj);
   });
+  store.nodes.push({
+    start: null,
+    end: null,
+  });
 };
 
 rl.on("close", () => {
-  const { data } = store;
+  const { data, nodes } = store;
   // console.log(data);
   // console.log("king", king(data));
   // console.log("participantNumber", participantNumber(data));
@@ -70,7 +74,7 @@ rl.on("close", () => {
   // console.log(families(data));
   setNodes(data);
 
-  console.log(store.nodes);
+  console.log(nodes);
   // console.log(getEdges(data));
 
   // console.log(setEdges(data));
