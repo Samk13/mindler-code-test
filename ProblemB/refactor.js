@@ -8,18 +8,33 @@ const rl = readline.createInterface({
 const store = {
   data: [],
   nodes: [],
+  path: [],
 };
-const { data, nodes } = store;
+const { data, nodes, path } = store;
 
+// read lines
 rl.on("line", (line) => {
   store.data.push(line.split(" "));
 });
 
+// setup input
 const king = (d) => d[1].toString();
 
 const participantNumber = (d) => parseInt(d[0][1]);
 
 const families = (d) => d.slice(2, parseInt(d[0][0]) + 2);
+
+Object.defineProperty(Array.prototype, "flat", {
+  value: function (depth = 1) {
+    return this.reduce(function (flat, toFlatten) {
+      return flat.concat(
+        Array.isArray(toFlatten) && depth > 1
+          ? toFlatten.flat(depth - 1)
+          : toFlatten
+      );
+    }, []);
+  },
+});
 
 const participants = (d) => d.slice(-participantNumber(d)).flat();
 
@@ -57,7 +72,7 @@ const setNodes = (da) => {
     end: null,
   });
 };
-// BFS
+// setup (BFS)  Breadth-First Search algorithm https://en.wikipedia.org/wiki/Breadth-first_search
 const setStartNode = (k) => (nodes[0].start = k);
 const getStartNode = () => nodes[0].start;
 const setEndNode = (k) => (nodes[0].end = k);
@@ -76,16 +91,14 @@ const BreadthFirstSearch = () => {
   queue.push(start);
   while (queue.length > 0) {
     let current = queue.shift();
-    console.log("current => ", current);
-    console.log("queue => ", queue);
-    if (current === end) {
-      console.log("FOUND || ========== >", current);
+    // console.log("current >> ", current);
+    if (end === current) {
+      // console.log("FOUND || ========== >", current);
       break;
     }
     let edges = getNode(current).edges;
     for (var i = 0; i < edges.length; i++) {
       let neighbor = edges[i];
-      // console.log("neighbors => ", neighbor);
       if (!getNode(neighbor).searched) {
         setNodeSearched(neighbor);
         setNodeParent(neighbor, current);
@@ -93,16 +106,21 @@ const BreadthFirstSearch = () => {
       }
     }
   }
+
+  // trace or reverse search path abd set weight
+  path.push(end);
+  let next = getNode(end).parent;
+  while (next !== null) {
+    path.push(next);
+    next = getNode(next).parent;
+  }
+  console.log(path);
+  return path;
 };
+
 rl.on("close", () => {
   setNodes(data);
-
-  setStartNode("helen");
+  setStartNode("charlesii");
   setEndNode(king(data));
-
   BreadthFirstSearch();
-
-  // console.log(nodes);
-  // console.log(setNodeWeight("henrii", 10));
-  // console.log(getNode("henrii"));
 });
