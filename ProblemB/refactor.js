@@ -1,24 +1,28 @@
-const { strict } = require("assert");
 const readline = require("readline");
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
   terminal: false,
 });
+// store init
 const store = {
   data: [],
   nodes: [],
 };
+const { data, nodes } = store;
 
 rl.on("line", (line) => {
   store.data.push(line.split(" "));
 });
 
 const king = (d) => d[1].toString();
-const familiesNumber = (d) => parseInt(d[0][0]);
+// const familiesNumber = (d) => parseInt(d[0][0]);
 const participantNumber = (d) => parseInt(d[0][1]);
+
 const families = (d) => d.slice(2, parseInt(d[0][0]) + 2);
+
 const participants = (d) => d.slice(-participantNumber(d)).flat();
+
 const setEdges = (d) => {
   let edges = families(d);
   for (let i = 0; i < edges.length; i++) {
@@ -28,15 +32,10 @@ const setEdges = (d) => {
     }, []);
   }
 };
+
 const names = (d) => {
   let set = new Set([...participants(d).flat(), ...families(d).flat()]);
   return Array.from(set);
-};
-
-const getEdges = (e) => {
-  let edges = setEdges(e);
-  // console.log(edges);
-  console.log(typeof edges);
 };
 
 const setNodes = (da) => {
@@ -57,28 +56,25 @@ const setNodes = (da) => {
     };
     store.nodes.push(obj);
   });
-  store.nodes.push({
+  store.nodes.unshift({
     start: null,
     end: null,
   });
 };
 
+const setStartNode = (k) => (nodes[0].start = k);
+const getStartNode = () => nodes[0].start;
+const setEndNode = (k) => (nodes[0].end = k);
+const getEndNode = () => nodes[0].end;
+const getNode = (n) => nodes.find((node) => node.value === n);
+const setNodeSearched = (n) => (getNode(n).searched = true);
+const setNodeParent = (n, p) => (getNode(n).parent = p);
+const setNodeWeight = (n, w) => (getNode(n).weight = w);
+
 rl.on("close", () => {
-  const { data, nodes } = store;
-  // console.log(data);
-  // console.log("king", king(data));
-  // console.log("participantNumber", participantNumber(data));
-  // console.log("familiesNumber", familiesNumber(data));
-  // console.log("families", families(data));
-  // console.log("participants", participants(data));
-  // console.log(families(data));
   setNodes(data);
+  setStartNode(king(data));
 
-  console.log(nodes);
-  // console.log(getEdges(data));
-
-  // console.log(setEdges(data));
-  // orginizing tha data
-  // console.log(data);
-  // preProcessData(store.data);
+  console.log(setNodeWeight("henrii", 10));
+  console.log(getNode("henrii"));
 });
