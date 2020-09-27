@@ -9,6 +9,7 @@ const store = {
   data: [],
   nodes: [],
   path: [],
+  results: [],
 };
 const { data, nodes, path } = store;
 
@@ -22,8 +23,6 @@ const getKing = (d) => d[1].toString();
 
 const participantNumber = (d) => parseInt(d[0][1]);
 
-const families = (d) => d.slice(2, parseInt(d[0][0]) + 2);
-
 Object.defineProperty(Array.prototype, "flat", {
   value: function (depth = 1) {
     return this.reduce(function (flat, toFlatten) {
@@ -36,6 +35,7 @@ Object.defineProperty(Array.prototype, "flat", {
   },
 });
 
+const families = (d) => d.slice(2, parseInt(d[0][0]) + 2);
 const participants = (d) => d.slice(-participantNumber(d)).flat();
 
 const setEdges = (d) => {
@@ -80,15 +80,17 @@ const getEndNode = () => nodes[0].end;
 const getNode = (n) => nodes.find((node) => node.value === n);
 const setNodeSearched = (n) => (getNode(n).searched = true);
 const setNodeParent = (n, p) => (getNode(n).parent = p);
-const setNodeWeight = (n, w) => (getNode(n).weight = w);
+
+// BFS Breadth-First Search
 const BreadthFirstSearch = () => {
-  const king = getKing(data)
-  names(data).forEach(n => {
+  const king = getKing(data);
+  // reset searched and parent values after each call
+  names(data).forEach((n) => {
     getNode(n).parent = null;
     getNode(n).searched = false;
+  });
 
-  } )
-  let queue = [];
+  const queue = [];
   const start = getStartNode();
   const end = getEndNode();
 
@@ -99,19 +101,20 @@ const BreadthFirstSearch = () => {
   while (queue.length > 0) {
     let current = queue.shift();
     // set weight for each node
-    const edges1 = getNode(current).edges 
-    let currentEdge = getNode(current) 
-    if(edges1.length > 0){
-      // or we can use incluedes(), i prefer this 
-      currentEdge.edges.forEach(e => {
-        if(e === king){
-          getNode(current).weight += 50
-          console.log('add 50  here ====> ¨',currentEdge);
-        } else if(getNode(e).edges === king){
-          getNode(current).weight += 25
-        console.log('kjsdföajklsdbjksbdf',getNode(current));  
+    const edges1 = getNode(current).edges;
+    let currentEdge = getNode(current);
+    if (edges1.length > 0) {
+      // or we can use incluedes(), i prefer this
+      currentEdge.edges.forEach((e) => {
+        if (e === king) {
+          currentEdge.weight += 50;
+          // console.log("added 50", currentEdge);
+          if (getNode(e).edges === king) {
+            currentEdge.weight += 25;
+            // console.log("kjsdföajklsdbjksbdf", currentEdge);
+          }
         }
-      })
+      });
     }
     // console.log("current >> ", current);
     if (end === current) {
@@ -128,7 +131,6 @@ const BreadthFirstSearch = () => {
       }
     }
   }
-
   // trace or reverse search path abd set weight
   path.push(end);
   let next = getNode(end).parent;
@@ -136,22 +138,36 @@ const BreadthFirstSearch = () => {
     path.push(next);
     next = getNode(next).parent;
   }
-  console.log(path);
-  return path;
+  // console.log(start, path);
+  const res = Array.from(new Set(path));
+
+  store.results.push({
+    participant: start,
+    value: res,
+    // weight: res.length,
+    weight: 0,
+  });
+  // return store.results;
 };
 
 const setPercentage = () => {
-  const king = getKing(data)
-  const participant = participants(data)
-  for(let i=0; i < participant.length; i++){
-  setStartNode(participant[i]);
-  setEndNode(king);
-  BreadthFirstSearch();
+  const king = getKing(data);
+  const participant = participants(data);
+  for (let i = 0; i < participant.length; i++) {
+    setStartNode(participant[i]);
+    setEndNode(king);
+    BreadthFirstSearch();
   }
-}
+};
+
+const test = (a) => {
+  console.log(a);
+};
 
 rl.on("close", () => {
   setNodes(data);
   setPercentage();
-
+  test(store.results);
+  // BreadthFirstSearch();
+  // test();
 });
