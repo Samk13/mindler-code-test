@@ -18,7 +18,7 @@ rl.on("line", (line) => {
 });
 
 // setup input
-const king = (d) => d[1].toString();
+const getKing = (d) => d[1].toString();
 
 const participantNumber = (d) => parseInt(d[0][1]);
 
@@ -82,6 +82,7 @@ const setNodeSearched = (n) => (getNode(n).searched = true);
 const setNodeParent = (n, p) => (getNode(n).parent = p);
 const setNodeWeight = (n, w) => (getNode(n).weight = w);
 const BreadthFirstSearch = () => {
+  const king = getKing(data)
   names(data).forEach(n => {
     getNode(n).parent = null;
     getNode(n).searched = false;
@@ -90,6 +91,7 @@ const BreadthFirstSearch = () => {
   let queue = [];
   const start = getStartNode();
   const end = getEndNode();
+
   // set start as searched
   setNodeSearched(start);
   //push it to the queue
@@ -102,15 +104,14 @@ const BreadthFirstSearch = () => {
     if(edges1.length > 0){
       // or we can use incluedes(), i prefer this 
       currentEdge.edges.forEach(e => {
-        if(e === king(data)){
-          getNode(current).weight = 50
-          console.log(currentEdge);
+        if(e === king){
+          getNode(current).weight += 50
+          console.log('add 50  here ====> ¨',currentEdge);
+        } else if(getNode(e).edges === king){
+          getNode(current).weight += 25
+        console.log('kjsdföajklsdbjksbdf',getNode(current));  
         }
       })
-      let depth1 = currentEdge.edges.forEach(e =>{
-        console.log('eeeee eee e e',e); 
-      }) 
-
     }
     // console.log("current >> ", current);
     if (end === current) {
@@ -140,10 +141,11 @@ const BreadthFirstSearch = () => {
 };
 
 const setPercentage = () => {
+  const king = getKing(data)
   const participant = participants(data)
   for(let i=0; i < participant.length; i++){
   setStartNode(participant[i]);
-  setEndNode(king(data));
+  setEndNode(king);
   BreadthFirstSearch();
   }
 }
