@@ -1,3 +1,4 @@
+const { count } = require("console");
 const readline = require("readline");
 const rl = readline.createInterface({
   input: process.stdin,
@@ -10,6 +11,7 @@ const store = {
   nodes: [],
   path: [],
   results: [],
+  percntage: [],
 };
 const { data, nodes, path } = store;
 
@@ -93,6 +95,7 @@ const BreadthFirstSearch = () => {
   const queue = [];
   const start = getStartNode();
   const end = getEndNode();
+  counter = 0;
 
   // set start as searched
   setNodeSearched(start);
@@ -104,14 +107,21 @@ const BreadthFirstSearch = () => {
     const edges1 = getNode(current).edges;
     let currentEdge = getNode(current);
     if (edges1.length > 0) {
+      counter += 1;
       // or we can use incluedes(), i prefer this
       currentEdge.edges.forEach((e) => {
         if (e === king) {
           currentEdge.weight += 50;
+          counter += 1;
           // console.log("added 50", currentEdge);
-          if (getNode(e).edges === king) {
-            currentEdge.weight += 25;
-            // console.log("kjsdföajklsdbjksbdf", currentEdge);
+          // console.log("kjsdföajklsdbjksbdf", currentEdge);
+        } else {
+          if (getNode(e).edges.length > 0) {
+            getNode(e).edges.forEach((e) => {
+              if (e === king) {
+                currentEdge.weight += 25;
+              }
+            });
           }
         }
       });
@@ -161,13 +171,45 @@ const setPercentage = () => {
 };
 
 const test = (a) => {
-  console.log(a);
+  const king = getKing(data);
+  const par = [];
+  families(data).forEach((f) => {
+    par.push(f[0]);
+  });
+  for (let i = 0; i < a.length; i++) {
+    if (par.includes(a[i].participant)) {
+      a[i].value.forEach((v) => {
+        let edg = getNode(v).edges;
+        if (edg.length > 0) {
+          getNode(v).edges.forEach((e) => {
+            if (e === king) {
+              getNode(v).weight += 50;
+            } else if (e !== king) {
+              if (getNode(e).edges === king) {
+                getNode(v).weight += 25;
+              }
+            }
+          });
+        }
+      });
+    }
+  }
 };
 
 rl.on("close", () => {
   setNodes(data);
   setPercentage();
   test(store.results);
-  // BreadthFirstSearch();
-  // test();
+  store.results.forEach((v) => {
+    v.value.forEach((c) => {
+      v.weight += getNode(c).weight;
+    });
+  });
+  // console.log(store.results);
+
+  store.results.sort(function (a, b) {
+    return b.weight - a.weight;
+  });
+
+  console.log(store.results[0].participant);
 });
